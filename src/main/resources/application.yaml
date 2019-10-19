@@ -1,0 +1,23 @@
+http:
+  #最大连接数
+  maxTotal: 300
+  #并发数
+  defaultMaxPerRoute: 50
+  #创建连接最长时长
+  connectTimeout: 1000
+  #从连接池获取最大时长
+  connectionRequestTimeout: 500
+  #数据传输最大时长
+  socketTimeout: 5000
+  #提交请求前测试连接是否可用
+  staleConnectionCheckEnabled: true
+
+url: "http://localhost:8081/upload"
+dataUrl: "http://localhost:8081/data"
+downloadUrl: "http://localhost:8081/download"
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
