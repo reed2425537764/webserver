@@ -5,12 +5,30 @@ import org.apache.commons.lang3.ArrayUtils;
 import javax.crypto.Cipher;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 public class RsaUtils {
+
+    private static byte[] publicKey;
+    private static byte[] privateKey;
+
+    static {
+        InputStream inputStream = RsaUtils.class.getClassLoader().getResourceAsStream("pub.pem");
+        InputStream inputStream1 = RsaUtils.class.getClassLoader().getResourceAsStream("pri.pem");
+        try {
+            publicKey = new byte[inputStream.available()];
+            inputStream.read(publicKey);
+
+            privateKey = new byte[inputStream1.available()];
+            inputStream1.read(privateKey);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     //  从文件中读取公钥
 
@@ -68,7 +86,7 @@ public class RsaUtils {
     //RSA加密
     public static String encryptStr(String str) throws Exception{
         Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.ENCRYPT_MODE, RsaUtils.getPrivateKey("E:\\mianshi\\pri.pem"));
+        cipher.init(Cipher.ENCRYPT_MODE, RsaUtils.getPrivateKey(privateKey));
         byte[] bytes = str.getBytes();
         byte[] encrypt = null;
         for (int i = 0; i < bytes.length; i += 64) {
@@ -81,7 +99,7 @@ public class RsaUtils {
     //RSA解密
     public static String decryptStr(String str)  throws Exception{
         Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.DECRYPT_MODE, RsaUtils.getPublicKey("E:\\mianshi\\pub.pem"));
+        cipher.init(Cipher.DECRYPT_MODE, RsaUtils.getPublicKey(publicKey));
         byte[] bytes = stringToBytes(str);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < bytes.length; i += 128) {
